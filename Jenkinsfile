@@ -35,10 +35,13 @@ pipeline {
             bat 'npm audit || exit /b 0' // This will show known CVEs in the output
             }
             post{
-                success{
-                    mail to: "nadunhs25@gmail.com",
-                    subject: "NPM Audit Status Email",
-                    body: "Secuirity Scan was successful"
+                always {
+                    emailext(
+                        subject: 'NPM Audit Security Scan Successfully Completed',
+                        body: 'Please include the attached build log.',
+                        to: 'nadunhs25@gmail.com',
+                        attachLog: true
+                    )
                 }
             }
         }
