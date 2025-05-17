@@ -15,14 +15,7 @@ pipeline {
             steps {
             bat 'npm test || exit /b 0' // Allows pipeline to continue despite test failures
             }
-
-            post{
-                success{
-                    mail to: "nadunhs25@gmail.com",
-                    subject: "Run Tests Status Email",
-                    body: "Run Tests were successful"
-                }
-            }
+            
         }
             stage('Generate Coverage Report') {
             steps {
@@ -34,16 +27,18 @@ pipeline {
             steps {
             bat 'npm audit || exit /b 0' // This will show known CVEs in the output
             }
-            post{
-                always {
+
+            post {
+                success {
                     emailext(
-                        subject: 'NPM Audit Security Scan Successfully Completed',
-                        body: 'Please include the attached build log.',
+                        attachLog: true,
                         to: 'nadunhs25@gmail.com',
-                        attachLog: true
+                        subject: "Build Success!",
+                        body: "The build was successful and log is attached."
                     )
                 }
             }
+
         }
     }
 }
